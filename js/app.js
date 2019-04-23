@@ -165,6 +165,7 @@ function checkGame() {
     }
     if (playerX.length + playerOh.length > 8) {
         catsGame = true;
+        gameInProgress = false;
         return gameIsCats();
 
     }
@@ -268,9 +269,11 @@ function interactionToggle(event) {
             hide(interactWindow);
         } else {
             show(interactWindow);
-            if (gameInProgress) {
-                hide(document.querySelector('#play'));
-                show(document.querySelector('#new-game'));
+            if (!gameInProgress) {
+                const play = document.querySelector('#play')
+                const newGame = document.querySelector('#new-game')
+                hide(play);
+                show(newGame);
             }
         }
     }
@@ -420,15 +423,19 @@ function playButton() {
     window.removeEventListener('keydown', interactionToggle);
     window.addEventListener('keydown', interactionToggle);
 }
+
 function playNewGameButton() {
-    Promise.resolve(reset()).then(playButton, () => console.log('error on NewgameButton playButton call'));
+    reset()
+    playButton()
 }
+
 function resetScoreButton() {
     playerXScore = 0;
     playerOhScore = 0;
     scoreElX.textContent = `X: ${playerOhScore}`;
     scoreElOh.textContent = `O: ${playerXScore}`;
 }
+
 function simpleAIButton(event) {
     simpleAI = !simpleAI;
     if (simpleAI) {
@@ -456,6 +463,7 @@ function minimaxAIButton(event) {
     }
     
 }
+
 document.getElementById('play').addEventListener('click', playButton);
 document.getElementById('new-game').addEventListener('click', playNewGameButton);
 document.getElementById('simple-ai').addEventListener('click', simpleAIButton);
